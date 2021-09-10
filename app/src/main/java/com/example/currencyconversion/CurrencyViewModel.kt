@@ -1,31 +1,43 @@
 package com.example.currencyconversion
 
+import android.util.Log
 import androidx.lifecycle.*
-import com.example.currencyconversion.data.Currency
-import com.example.currencyconversion.data.CurrencyDao
 import com.example.currencyconversion.data.CurrencyView
 import com.example.currencyconversion.network.CurrencyApi
+import com.example.currencyconversion.network.CurrencyResponse
 import kotlinx.coroutines.launch
 
-class CurrencyViewModel(private val currencyDao: CurrencyDao) : ViewModel() {
+class CurrencyViewModel : ViewModel() {
+    fun setAmount(amount: String?) {
+        if (amount != null) {
+            _amountToConvert.value = amount.toDouble()
+        } else {
+            _amountToConvert.value = 1.0
+        }
+    }
+
     private val _amountToConvert: MutableLiveData<Double> = MutableLiveData()
     val amountToConvert: LiveData<Double> = _amountToConvert
 
 
-    private val _allCurrency: MutableLiveData<List<Currency>> = MutableLiveData()
-    val allCurrency: LiveData<List<Currency>> = _allCurrency
+    private val _rawAPIData: MutableLiveData<CurrencyResponse> = MutableLiveData()
+    val rawAPIData: LiveData<CurrencyResponse> = _rawAPIData
 
+    val transformedAPIData: LiveData<List<CurrencyView>> =
+        Transformations.switchMap(rawAPIData) { getTransformedData(it) }
 
-    val currencyView: LiveData<List<CurrencyView>> =
-        Transformations.map(allCurrency) { currencyList ->
-            currencyList.map {
+    private fun getTransformedData(response: CurrencyResponse): LiveData<List<CurrencyView>> {
+        return amountToConvert.map { amount->
+            response.quotes.toList().map {
                 CurrencyView(
-                    it.currencyCode,
-                    it.USDollarIndex * amountToConvert.value!!,
-                    java.util.Currency.getInstance(it.currencyCode).toString()
+                    it.first.takeLast(3),
+                    it.second * amount,
+                    java.util.Currency.getInstance(it.first.takeLast(3)).toString()
                 )
             }
         }
+
+    }
 
     /**
      * Get currency information from the currency api retrofit service
@@ -33,37 +45,10 @@ class CurrencyViewModel(private val currencyDao: CurrencyDao) : ViewModel() {
      */
     init {
         viewModelScope.launch {
-            val currencyList = CurrencyApi.retrofitService.getCurrencies().quotes.toList().map {
-                Currency(currencyCode = it.first.takeLast(3), USDollarIndex = it.second)
-            }
-            // save api data into database
-            currencyDao.insertAll(currencyList)
-
-            // get data from database and assign
-            _allCurrency.value = currencyDao.getAllCurrency().asLiveData().value
+            _rawAPIData.value = CurrencyApi.retrofitService.getCurrencies()
+            val logTest= _rawAPIData.value
+            Log.i("rawApiData",logTest.toString())
         }
-    }
 
-
-
-
-    fun setAmount(inputAmount: String?) {
-        if (inputAmount != null) {
-            _amountToConvert.value = inputAmount.toDouble()
-        }
-    }
-
-}
-
-/**
- * Factory class to instantiate the [ViewModel] instance.
- */
-class CurrencyViewModelFactory(private val currencyDao: CurrencyDao) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CurrencyViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return CurrencyViewModel(currencyDao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
