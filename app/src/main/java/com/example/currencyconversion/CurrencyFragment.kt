@@ -2,22 +2,16 @@ package com.example.currencyconversion
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.currencyconversion.data.CurrencyApplication
-import com.example.currencyconversion.databinding.ActivityMainBinding
 import com.example.currencyconversion.databinding.FragmentCurrencyBinding
-import kotlinx.coroutines.launch
-import kotlin.math.log
 
 
 /**
@@ -27,12 +21,7 @@ import kotlin.math.log
  */
 class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
-    private val viewModel: CurrencyViewModel by activityViewModels{
-        CurrencyViewModelFactory(
-            (activity?.application as CurrencyApplication).database
-                .currencyDao()
-        )
-    }
+    private val viewModel: CurrencyViewModel by activityViewModels()
 
     // Binding object instance corresponding to the fragment_currency.xml layout
     // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
@@ -48,14 +37,14 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener {
         // Inflate the layout for this fragment
         _binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         // Create an ArrayAdapter using the string array and a default spinner layout
-        context?.let {
-            viewModel.currencyView.value?.map { currencyList ->
+        /*context?.let {
+            viewModel.transformedAPIData.value?.map { currencyList ->
                 currencyList.currencyCode
-            }?.let { currencyCodeList ->
+            }.let { currencyCodeList ->
                 ArrayAdapter(
                     it,
                     android.R.layout.simple_spinner_item,
-                    currencyCodeList
+                    currencyCodeList!!
                 ).also { adapter ->
                     // Specify the layout to use when the list of choices appears
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -64,8 +53,18 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.baseCurrencySpinner.onItemSelectedListener = this
                 }
             }
-        }
+        }*/
+//        ArrayAdapter(context, android.R.layout.simple_spinner_item, listOf(1,2,3))
 
+        viewModel.transformedAPIData.observe(viewLifecycleOwner) { currencyViewList ->
+            Log.i("transformedApiData", viewModel.rawAPIData.value.toString())
+            Log.i("transformedApiData", currencyViewList.toString())
+            context?.let {
+                ArrayAdapter(
+                    it, android.R.layout.simple_spinner_item,
+                    currencyViewList.map { currencyView -> currencyView.currencyCode })
+            }
+        }
         return binding.root
     }
 
@@ -75,15 +74,10 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
 
-        binding.amountToConvert.doAfterTextChanged {
-            text -> viewModel.setAmount(text?.toString())
+        binding.amountToConvert.doAfterTextChanged { text ->
+            viewModel.setAmount(text?.toString())
         }
 
-        /*viewModel.allCurrency.observe(viewLifecycleOwner){
-            Log.i("allCurrency", it.toString())
-        }
-        Log.i("allCurrency", viewModel.allCurrency.observe(viewLifecycleOwner){}.toString())
-        Log.i("currencyView", viewModel.currencyView.value.toString())*/
     }
 
 
