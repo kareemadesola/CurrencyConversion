@@ -16,11 +16,11 @@ class CurrencyViewModel : ViewModel() {
         }
     }
 
-    private val _amountToConvert: MutableLiveData<Double> = MutableLiveData()
+    private val _amountToConvert: MutableLiveData<Double> by lazy { MutableLiveData<Double>() }
     val amountToConvert: LiveData<Double> = _amountToConvert
 
 
-    private val _rawAPIData: MutableLiveData<CurrencyResponse> = MutableLiveData()
+    private val _rawAPIData: MutableLiveData<CurrencyResponse> by lazy { MutableLiveData<CurrencyResponse>() }
     val rawAPIData: LiveData<CurrencyResponse> = _rawAPIData
 
     val transformedAPIData: LiveData<List<CurrencyView>> =
@@ -28,15 +28,18 @@ class CurrencyViewModel : ViewModel() {
 
     private fun getTransformedData(response: CurrencyResponse): LiveData<List<CurrencyView>> {
         return amountToConvert.map { amount->
-            response.quotes.toList().map {
+            response.quotes.toList().map { it ->
                 CurrencyView(
                     it.first.takeLast(3),
-                    it.second * amount,
-                    java.util.Currency.getInstance(it.first.takeLast(3)).toString()
+                    (it.second * amount).let { String.format("%.2f", it) },
+                    java.util.Currency.getInstance(it.first.takeLast(3)).displayName
                 )
             }
         }
 
+    }
+    val spinnerData: LiveData<List<String>> = Transformations.map(rawAPIData){ currencyResponse ->
+        currencyResponse.quotes.toList().map { it.first.takeLast(3) }
     }
 
     /**
@@ -46,8 +49,10 @@ class CurrencyViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             _rawAPIData.value = CurrencyApi.retrofitService.getCurrencies()
-            val logTest= _rawAPIData.value
-            Log.i("rawApiData",logTest.toString())
+//            val logTest= _rawAPIData.value
+            Log.i("rawApiData",rawAPIData.value.toString())
+//            val test = transformedAPIData.value
+//            Log.i("transformedAPIData", test.toString())
         }
 
     }
