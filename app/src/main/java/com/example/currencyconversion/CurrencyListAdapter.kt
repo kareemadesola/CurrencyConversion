@@ -27,7 +27,7 @@ class CurrencyListAdapter :
 
         fun bind(currencyView: CurrencyView) {
             binding.currencyAbbr.text = currencyView.currencyCode
-            binding.convertedAmount.text = currencyView.convertedAmount.toString()
+            binding.convertedAmount.text = currencyView.convertedAmount
             binding.currencyFullName.text = currencyView.currencyFullName
         }
     }
