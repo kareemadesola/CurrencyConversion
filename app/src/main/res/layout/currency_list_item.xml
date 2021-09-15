@@ -8,17 +8,14 @@
 
     <TextView
         android:id="@+id/currency_abbr"
-        style="@style/TextAppearance.AppCompat.Large"
+        style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/purple_200"
         android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/currency_full_name"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="AED" />
@@ -26,22 +23,28 @@
     <TextView
         android:id="@+id/converted_amount"
         style="@style/TextAppearance.AppCompat.Headline"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.7"
         android:layout_height="wrap_content"
+        android:textAlignment="viewEnd"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/currency_abbr"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="56.93" />
 
     <TextView
         android:id="@+id/currency_full_name"
         style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textAlignment="viewEnd"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/converted_amount"
-        tools:text="United Arab Emirates Dirham" />
+        app:layout_constraintWidth_percent="0.6"
+        tools:text="Dirham" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
