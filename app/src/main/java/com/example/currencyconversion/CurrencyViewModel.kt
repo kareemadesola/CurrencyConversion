@@ -8,13 +8,8 @@ import com.example.currencyconversion.network.CurrencyResponse
 import kotlinx.coroutines.launch
 
 class CurrencyViewModel : ViewModel() {
-    fun setAmount(amount: String?) = when {
-        amount==null || amount.isBlank() -> {
-            _amountToConvert.value = 0.0
-        }
-        else -> {
-            _amountToConvert.value = amount.toDouble()
-        }
+    fun setAmount(amount: String?){
+        _amountToConvert.value = amount?.toDoubleOrNull() ?: 0.0
     }
 
     private val _amountToConvert: MutableLiveData<Double> by lazy { MutableLiveData<Double>() }
