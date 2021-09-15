@@ -2,6 +2,6 @@ package com.example.currencyconversion.data
 
 data class CurrencyView(
     val currencyCode: String,
-    val convertedAmount: Double,
+    val convertedAmount: String,
     val currencyFullName: String
 )
