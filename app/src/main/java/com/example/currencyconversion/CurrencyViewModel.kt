@@ -12,7 +12,7 @@ class CurrencyViewModel : ViewModel() {
         _amountToConvert.value = amount?.toDoubleOrNull() ?: 0.0
     }
 
-    private val _amountToConvert: MutableLiveData<Double> by lazy { MutableLiveData<Double>() }
+    private val _amountToConvert: MutableLiveData<Double> by lazy { MutableLiveData<Double>(0.0) }
     val amountToConvert: LiveData<Double> = _amountToConvert
 
 
