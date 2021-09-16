@@ -64,9 +64,7 @@ class CurrencyListAdapter :
             }
             else -> {
                 when {
-                    payloads[0] == true -> {
-                        holder.bindConvertedAmount(getItem(position))
-                    }
+                    payloads[0] == true -> holder.bindConvertedAmount(getItem(position))
                 }
             }
         }
