@@ -22,7 +22,7 @@ class CurrencyViewModel : ViewModel() {
 
     val transformedAPIData: LiveData<List<CurrencyView>> = Transformations.switchMap(rawAPIData) { getTransformedData(it) }
 
-    private fun getTransformedData(response: CurrencyResponse): LiveData<List<CurrencyView>> {
+    /*private fun getTransformedData(response: CurrencyResponse): LiveData<List<CurrencyView>> {
         return amountToConvert.map { amount ->
             response.quotes.toList().map { currencyPair ->
                 CurrencyView(
@@ -32,7 +32,7 @@ class CurrencyViewModel : ViewModel() {
                 )
             }
         }
-    }
+    }*/
 
 
     val spinnerData: LiveData<List<String>> = Transformations.map(rawAPIData){ currencyResponse ->
