@@ -61,7 +61,7 @@ class CurrencyViewModel : ViewModel() {
         transformedAPIData.value = rawAPIData.quotes.toList().map { currencyPair ->
             CurrencyView(
                 currencyPair.first.takeLast(3),
-                (amountToConvert.times(baseCurrencyRate).div(currencyPair.second)).let { String.format("%.2f", it)
+                (amountToConvert.times(currencyPair.second).div(baseCurrencyRate)).let { String.format("%.2f", it)
                 },
                 Currency.getInstance(currencyPair.first.takeLast(3)).displayName
             )
