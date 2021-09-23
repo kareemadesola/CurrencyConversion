@@ -20,21 +20,6 @@ class CurrencyViewModel : ViewModel() {
     private val _rawAPIData: MutableLiveData<CurrencyResponse> by lazy { MutableLiveData<CurrencyResponse>() }
     private val rawAPIData: LiveData<CurrencyResponse> = _rawAPIData
 
-    val transformedAPIData: LiveData<List<CurrencyView>> = Transformations.switchMap(rawAPIData) { getTransformedData(it) }
-
-    /*private fun getTransformedData(response: CurrencyResponse): LiveData<List<CurrencyView>> {
-        return amountToConvert.map { amount ->
-            response.quotes.toList().map { currencyPair ->
-                CurrencyView(
-                    currencyPair.first.takeLast(3),
-                    (amount.times(currencyPair.second)).let { String.format("%.2f", it) },
-                    Currency.getInstance(currencyPair.first.takeLast(3)).displayName
-                )
-            }
-        }
-    }*/
-
-
     val spinnerData: LiveData<List<String>> = Transformations.map(rawAPIData){ currencyResponse ->
         currencyResponse.quotes.toList().map {
             it.first.takeLast(3)
@@ -45,14 +30,11 @@ class CurrencyViewModel : ViewModel() {
     val baseCurrencyRate: LiveData<Double> = _baseCurrencyRate
 
     fun setBaseCurrencyRate(spinnerSelectedValue: String) {
-        _baseCurrencyRate.value = Transformations.map(rawAPIData){ currencyResponse ->
-            currencyResponse.quotes.toList().find { it.first.takeLast(3) == spinnerSelectedValue }
-        }.map { it?.second }.value
-//        val currency =rawAPIData.map { it.quotes.toList().map { it. } }
-//        val currencyAmount = currency?.convertedAmount
-        Log.i("transformedAPIData", transformedAPIData.value.toString())
+        _baseCurrencyRate.value = rawAPIData.value!!.quotes.toList().find { it.first.takeLast(3) == spinnerSelectedValue }!!.second
         Log.i("baseCurrencyRate", _baseCurrencyRate.value.toString())
     }
+
+    val transformedAPIData: MediatorLiveData<List<CurrencyView>> = MediatorLiveData<List<CurrencyView>>()
 
     /**
      * Get currency information from the currency api retrofit service
@@ -63,6 +45,27 @@ class CurrencyViewModel : ViewModel() {
             _rawAPIData.value = CurrencyApi.retrofitService.getCurrencies()
             Log.i("rawApiData", rawAPIData.value.toString())
         }
-
+        transformedAPIData.addSource(rawAPIData){
+            transformData(it, amountToConvert.value, baseCurrencyRate.value)
+        }
+        transformedAPIData.addSource(amountToConvert){
+            transformData(rawAPIData.value, it, baseCurrencyRate.value)
+        }
+        transformedAPIData.addSource(baseCurrencyRate){
+            transformData(rawAPIData.value, amountToConvert.value, it)
+        }
     }
+
+    private fun transformData(rawAPIData: CurrencyResponse?, amountToConvert: Double?, baseCurrencyRate: Double?) {
+        if (rawAPIData == null || amountToConvert == null || baseCurrencyRate == null) return
+        transformedAPIData.value = rawAPIData.quotes.toList().map { currencyPair ->
+            CurrencyView(
+                currencyPair.first.takeLast(3),
+                (amountToConvert.times(baseCurrencyRate).div(currencyPair.second)).let { String.format("%.2f", it)
+                },
+                Currency.getInstance(currencyPair.first.takeLast(3)).displayName
+            )
+        }
+    }
+
 }
