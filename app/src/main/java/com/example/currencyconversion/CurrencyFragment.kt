@@ -13,7 +13,9 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.currencyconversion.data.CurrencyApplication
 import com.example.currencyconversion.databinding.FragmentCurrencyBinding
+import com.example.currencyconversion.utils.Pref
 
 
 /**
@@ -23,16 +25,20 @@ import com.example.currencyconversion.databinding.FragmentCurrencyBinding
  */
 class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
-    private val viewModel: CurrencyViewModel by viewModels()
+    private val viewModel: CurrencyViewModel by viewModels {
+        CurrencyViewModelFactory(
+            (activity?.application as CurrencyApplication).database
+                .currencyDao(), Pref(requireContext())
+        )
+    }
 
     // Binding object instance corresponding to the fragment_currency.xml layout
     // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
     // when the view hierarchy is attached to the fragment
     private lateinit var _binding: FragmentCurrencyBinding
     private val binding get() = _binding
+
     private var userSelect = true
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +46,14 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentCurrencyBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.amountToConvert.doAfterTextChanged { text ->
+            viewModel.setAmount(text?.toString())
+        }
         // Create an ArrayAdapter using the string array and a default spinner layout
         viewModel.spinnerData.observe(viewLifecycleOwner) { currencyCodeList ->
             context?.let {
@@ -65,24 +79,13 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
             }
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.amountToConvert.doAfterTextChanged { text ->
-            viewModel.setAmount(text?.toString())
-        }
-
-
 
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (userSelect) {
             val spinnerSelectedValue = parent?.getItemAtPosition(position).toString()
-//        val spinnerSelectedValue = viewModel.spinnerData.value!![position]
+
             Log.i("spinner", spinnerSelectedValue)
             Toast.makeText(context, spinnerSelectedValue, Toast.LENGTH_LONG).show()
             viewModel.setBaseCurrencyRate(spinnerSelectedValue)
