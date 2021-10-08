@@ -12,5 +12,5 @@ data class Currency(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "code") val currencyCode: String,
-    @ColumnInfo(name = "us_dollar_rate") val USDollarIndex: Double
+    @ColumnInfo(name = "us_dollar_rate") val USDollarRate: Double
 )
