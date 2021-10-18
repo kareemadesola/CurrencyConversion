@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="currency_code_palette">
+        <item>@color/lilac_snow</item>
+        <item>@color/slightly_pink</item>
+        <item>@color/pink_shimmer</item>
+        <item>@color/porcelain</item>
+        <item>@color/luxury_pearl</item>
+    </array>
+</resources>
