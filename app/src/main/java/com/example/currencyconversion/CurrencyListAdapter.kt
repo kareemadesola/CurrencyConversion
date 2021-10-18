@@ -1,15 +1,22 @@
 package com.example.currencyconversion
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.currencyconversion.data.CurrencyApplication
 import com.example.currencyconversion.data.CurrencyView
 import com.example.currencyconversion.databinding.CurrencyListItemBinding
+import com.example.currencyconversion.utils.Pref
+import kotlin.random.Random
 
 class CurrencyListAdapter :
     ListAdapter<CurrencyView, CurrencyListAdapter.CurrencyViewHolder>(DiffCallback) {
+
 
     companion object DiffCallback : DiffUtil.ItemCallback<CurrencyView>() {
         override fun areItemsTheSame(oldItem: CurrencyView, newItem: CurrencyView): Boolean {
@@ -34,12 +41,26 @@ class CurrencyListAdapter :
 
         fun bind(currencyView: CurrencyView) {
             binding.currencyAbbr.text = currencyView.currencyCode
+            binding.currencyAbbr.setBackgroundColor(getBackgroundColor(binding.root.context))
             binding.convertedAmount.text = currencyView.convertedAmount
             binding.currencyFullName.text = currencyView.currencyFullName
         }
+
         fun bindConvertedAmount(currencyView: CurrencyView) {
             binding.convertedAmount.text = currencyView.convertedAmount
         }
+
+        private fun getBackgroundColor(context: Context):Int {
+            val currencyCodePalette =
+                context.resources.obtainTypedArray(R.array.currency_code_palette)
+            return currencyCodePalette.getColor(
+                Random.nextInt(currencyCodePalette.length()),
+                0
+            ).also {
+                currencyCodePalette.recycle()
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(
