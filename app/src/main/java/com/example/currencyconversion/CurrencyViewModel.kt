@@ -9,7 +9,10 @@ import com.example.currencyconversion.utils.Pref
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CurrencyViewModel(private val currencyDao: CurrencyDao, private val pref: Pref) :
+class CurrencyViewModel(
+    private val currencyDao: CurrencyDao,
+    private val pref: Pref
+) :
     ViewModel() {
 
 
@@ -127,7 +130,10 @@ class CurrencyViewModel(private val currencyDao: CurrencyDao, private val pref: 
 /**
  *  Factory class to instantiate the [ViewModel] instance
  */
-class CurrencyViewModelFactory(private val currencyDao: CurrencyDao, private val pref: Pref) :
+class CurrencyViewModelFactory(
+    private val currencyDao: CurrencyDao,
+    private val pref: Pref
+) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CurrencyViewModel::class.java)) {
