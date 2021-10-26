@@ -18,11 +18,7 @@ import com.example.currencyconversion.databinding.FragmentCurrencyBinding
 import com.example.currencyconversion.utils.Pref
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CurrencyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
     private val viewModel: CurrencyViewModel by viewModels {
@@ -35,8 +31,8 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
     // Binding object instance corresponding to the fragment_currency.xml layout
     // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
     // when the view hierarchy is attached to the fragment
-    private lateinit var _binding: FragmentCurrencyBinding
-    private val binding get() = _binding
+    private var _binding: FragmentCurrencyBinding? = null
+    private val binding get() = _binding!!
 
     private var userSelect = true
 
@@ -101,4 +97,8 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
         return false
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
