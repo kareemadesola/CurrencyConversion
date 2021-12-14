@@ -10,18 +10,17 @@
 
     <EditText
         android:id="@+id/amount_to_convert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="?attr/textAppearanceBody1"
+        android:layout_width="168dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/amount_to_convert"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:minHeight="48dp"
-        android:textAlignment="textEnd"
+        android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="15.50" />
 
@@ -35,10 +34,8 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="@+id/amount_to_convert"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/amount_to_convert"
-        tools:listitem="@layout/tools_spinner_list_item" />
+        tools:listitem="@layout/spinner_list" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
