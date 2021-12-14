@@ -3,7 +3,6 @@ package com.example.currencyconversion
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -19,7 +18,7 @@ import com.example.currencyconversion.utils.Pref
 
 
 
-class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
+class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private val viewModel: CurrencyViewModel by viewModels {
         CurrencyViewModelFactory(
@@ -33,8 +32,6 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
     // when the view hierarchy is attached to the fragment
     private var _binding: FragmentCurrencyBinding? = null
     private val binding get() = _binding!!
-
-    private var userSelect = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,18 +49,15 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
         }
         // Create an ArrayAdapter using the string array and a default spinner layout
         viewModel.spinnerData.observe(viewLifecycleOwner) { currencyCodeList ->
-            context?.let {
                 ArrayAdapter(
-                    it, android.R.layout.simple_spinner_item,
+                    requireContext(), android.R.layout.simple_spinner_item,
                     currencyCodeList
                 ).also { adapter ->
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    adapter.setDropDownViewResource(R.layout.spinner_list)
                     binding.baseCurrencySpinner.adapter = adapter
-                    binding.baseCurrencySpinner.setOnTouchListener(this)
                     binding.baseCurrencySpinner.onItemSelectedListener = this
                 }
 
-            }
         }
 
         val adapter = CurrencyListAdapter()
@@ -79,23 +73,16 @@ class CurrencyFragment : Fragment(), AdapterView.OnItemSelectedListener, View.On
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (userSelect) {
             val spinnerSelectedValue = parent?.getItemAtPosition(position).toString()
 
-            Log.i("spinner", spinnerSelectedValue)
-            Toast.makeText(context, spinnerSelectedValue, Toast.LENGTH_LONG).show()
-            viewModel.setBaseCurrencyRate(spinnerSelectedValue)
-            userSelect = false
-        }
+        Log.i("spinner", spinnerSelectedValue)
+        Toast.makeText(context, spinnerSelectedValue, Toast.LENGTH_SHORT).show()
+        viewModel.setBaseCurrencyRate(spinnerSelectedValue)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        userSelect = true
-        return false
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
