@@ -1,17 +1,13 @@
 package com.example.currencyconversion
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.currencyconversion.data.CurrencyApplication
 import com.example.currencyconversion.data.CurrencyView
 import com.example.currencyconversion.databinding.CurrencyListItemBinding
-import com.example.currencyconversion.utils.Pref
 import kotlin.random.Random
 
 class CurrencyListAdapter :
