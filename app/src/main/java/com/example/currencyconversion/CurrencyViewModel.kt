@@ -8,7 +8,6 @@ import com.example.currencyconversion.network.CurrencyApi
 import com.example.currencyconversion.utils.Pref
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class CurrencyViewModel(
@@ -76,14 +75,12 @@ class CurrencyViewModel(
             // App installed and opened for the first time
             lastTime == 0L -> {
                 // insert api data into db
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     // insert db with api data
-                    withContext(Dispatchers.IO) {
-                        currencyDao.insertAll(getCurrencyListAPIData())
+                    currencyDao.insertAll(getCurrencyListAPIData())
 
-                        // update shared preference key TIME_CREATED to currentTimeMillis
-                        pref.putLastTime(System.currentTimeMillis())
-                    }
+                    // update shared preference key TIME_CREATED to currentTimeMillis
+                    pref.putLastTime(System.currentTimeMillis())
                 }
 
             }
@@ -91,13 +88,12 @@ class CurrencyViewModel(
             // Cache expired i.e more than a day since the database was written to
             System.currentTimeMillis() - lastTime > 86_400_000L -> {
 
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     // update db with api data
-                    withContext(Dispatchers.IO) {
-                        currencyDao.update(getCurrencyListAPIData())
-                        // update shared preference key TIME_CREATED to currentTimeMillis
-                        pref.putLastTime(System.currentTimeMillis())
-                    }
+                    currencyDao.update(getCurrencyListAPIData())
+
+                    // update shared preference key TIME_CREATED to currentTimeMillis
+                    pref.putLastTime(System.currentTimeMillis())
                 }
             }
         }
