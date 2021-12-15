@@ -6,7 +6,9 @@ import com.example.currencyconversion.data.CurrencyDao
 import com.example.currencyconversion.data.CurrencyView
 import com.example.currencyconversion.network.CurrencyApi
 import com.example.currencyconversion.utils.Pref
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class CurrencyViewModel(
@@ -76,11 +78,14 @@ class CurrencyViewModel(
                 // insert api data into db
                 viewModelScope.launch {
                     // insert db with api data
-                    currencyDao.insertAll(getCurrencyListAPIData())
+                    withContext(Dispatchers.IO) {
+                        currencyDao.insertAll(getCurrencyListAPIData())
+
+                        // update shared preference key TIME_CREATED to currentTimeMillis
+                        pref.putLastTime(System.currentTimeMillis())
+                    }
                 }
 
-                // update shared preference key TIME_CREATED to currentTimeMillis
-                pref.putLastTime(System.currentTimeMillis())
             }
 
             // Cache expired i.e more than a day since the database was written to
@@ -88,11 +93,12 @@ class CurrencyViewModel(
 
                 viewModelScope.launch {
                     // update db with api data
-                    currencyDao.update(getCurrencyListAPIData())
+                    withContext(Dispatchers.IO) {
+                        currencyDao.update(getCurrencyListAPIData())
+                        // update shared preference key TIME_CREATED to currentTimeMillis
+                        pref.putLastTime(System.currentTimeMillis())
+                    }
                 }
-
-                // update shared preference key TIME_CREATED to currentTimeMillis
-                pref.putLastTime(System.currentTimeMillis())
             }
         }
     }
