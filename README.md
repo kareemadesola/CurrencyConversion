@@ -1,8 +1,8 @@
 # CurrencyConversion
 #### This kotlin android application allows you to choose a base currency and shows all amount converted from that base currency in a recycler view
 <!-- Add buttons here -->
-![GitHub all releases](https://img.shields.io/github/downloads/kareemadesola/unit-converter/total?color=%2342f554&logo=Github&style=flat-square)<!--![GitHub release (latest by date)](https://img.shields.io/github/downloads/kareemadesola/unit-converter/v1.0/total)-->
-![GitHub](https://img.shields.io/github/license/kareemadesola/CurrencyConversion?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/kareemadesola/currencyconversion)
+![GitHub](https://img.shields.io/github/license/kareemadesola/currencyconversion)
 ![GitHub issues](https://img.shields.io/github/issues/kareemadesola/CurrencyConversion?style=plastic)
 ![GitHub code size in bytes](https://img.shields.io/github/repo-size/kareemadesola/CurrencyConversion?style=plastic)
 
@@ -51,6 +51,6 @@ This is free, open-source software. If you'd like to support the development of 
 ## License
 [(Back to top)](#table-of-contents)
 
-![GitHub](https://img.shields.io/github/license/kareemadesola/CurrencyConversion?style=plastic)
+![GitHub](https://img.shields.io/github/license/kareemadesola/currencyconversion)
 
 The Unit-Converter is licensed under the terms and conditions of the [MIT Licence](https://opensource.org/licenses/MIT) and is available for free.
