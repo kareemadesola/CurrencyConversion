@@ -47,6 +47,7 @@ This is free, open-source software. If you'd like to support the development of 
 
 -   [Kennedy Odife](https://github.com/odifek)  for technical assistance and innovative ideas
 - [Android Basics in Kotlin](https://developer.android.com/courses/android-basics-kotlin/course)
+- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 
 ## License
 [(Back to top)](#table-of-contents)
